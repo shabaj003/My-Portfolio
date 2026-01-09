@@ -525,6 +525,12 @@ lottie-player {
   padding: 5vw 9vw;
   overflow: hidden;
 }
+#project a{
+  margin-top: 1vw;
+}
+#project .lang1{
+  margin-top: 2vw;
+}
 #project h1 {
   font-size: 1.1rem;
   display:inline-block;
@@ -660,12 +666,6 @@ lottie-player {
   transform: scale(0.97);
 }
 
-#project .card .lang{
-  margin-top: 0vw;
-}
-#project .card .lang1{
-  margin-top: 0.7vw;
-}
 /* Contact Section */
 #contact {
   display: flex;
