@@ -321,10 +321,17 @@ html, body {
   }
 }
 
+@media (max-width: 768px) {
+  #Images img {
+    width: 250px;
+    height: 350px;
+  }
+}
+
 @media (max-width: 480px) {
   #Images img {
-    width: 70px;
-    height: 70px;
+    width: 200px;
+    height: 280px;
   }
 } 
 
