@@ -2,7 +2,13 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-family: "Space Grotesk", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+:root {
+  --page-bg: #e9edf2;
+  --accent-cyan: #09c8f3;
+  --deep-shadow: rgba(5, 18, 30, 0.28);
 }
 
 html, body {
@@ -10,8 +16,15 @@ html, body {
   height: 100%;
 }
 
+body {
+  overflow-x: hidden;
+  background: radial-gradient(circle at 18% 8%, #f9fdff 0%, var(--page-bg) 40%, #dbe5ed 100%);
+  color: #0f1a24;
+}
+
 #main {
   width: 100%;
+  transform-style: preserve-3d;
 }
 
 #loader {
@@ -87,7 +100,87 @@ html, body {
 #home{
   /* height: 300vh; */
   width: 100%;
-  background-color: rgb(240, 240, 240);
+  background: linear-gradient(180deg, rgba(248, 252, 255, 0.92), rgba(238, 244, 248, 0.98));
+  position: relative;
+  isolation: isolate;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+  --pointer-x: 0;
+  --pointer-y: 0;
+}
+
+#home::before,
+#home::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+  filter: blur(18px);
+  transition: transform 0.35s ease-out;
+  z-index: 0;
+}
+
+#home::before {
+  width: 280px;
+  height: 280px;
+  top: 200px;
+  left: -70px;
+  background: radial-gradient(circle at 30% 30%, rgba(9, 200, 243, 0.35), rgba(9, 200, 243, 0));
+  transform: translate3d(calc(var(--pointer-x) * -34px), calc(var(--pointer-y) * -18px), 0);
+}
+
+#home::after {
+  width: 340px;
+  height: 340px;
+  top: 900px;
+  right: -120px;
+  background: radial-gradient(circle at 35% 35%, rgba(5, 156, 208, 0.24), rgba(5, 156, 208, 0));
+  transform: translate3d(calc(var(--pointer-x) * 30px), calc(var(--pointer-y) * 26px), 0);
+}
+
+#home > * {
+  position: relative;
+  z-index: 1;
+}
+
+.tilt-surface {
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform 0.22s ease, box-shadow 0.24s ease, border-color 0.24s ease;
+  border: 1px solid transparent;
+}
+
+.tilt-surface::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 58%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.24s ease;
+}
+
+.tilt-surface:hover::after {
+  opacity: 1;
+}
+
+.tilt-surface:hover {
+  box-shadow: 0 22px 45px var(--deep-shadow);
+  border-color: rgba(9, 200, 243, 0.28);
+}
+
+.tilt-layer {
+  position: relative;
+  will-change: transform;
+  transform-style: preserve-3d;
+  transition: transform 0.25s ease;
+}
+
+.depth-title {
+  text-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+  transform-style: preserve-3d;
 }
 
 #home #nav{
@@ -402,6 +495,7 @@ lottie-player {
   border: 1px solid rgba(255, 255, 255, 0.03);
   transition: transform 0.28s, box-shadow 0.28s;
   cursor: pointer;
+  transform-style: preserve-3d;
 }
 .Education2 {
   background: white;
@@ -410,6 +504,7 @@ lottie-player {
   border: 1px solid rgba(255, 255, 255, 0.03);
   transition: transform 0.28s, box-shadow 0.28s;
   cursor: pointer;
+  transform-style: preserve-3d;
 }
 
 .Education1:hover, .Education2:hover {
@@ -503,6 +598,7 @@ lottie-player {
   align-items: center;
   justify-content: center;
   transition: transform 0.3s ease;
+  transform-style: preserve-3d;
 }
 
 .skill-card img {
@@ -568,6 +664,7 @@ lottie-player {
   opacity: 0;
   transform: translateY(40px);
   animation: sneakIn 0.8s ease forwards;
+  border-radius: 18px;
 }
 
 .card:nth-child(1) { animation-delay: 0.3s; }
@@ -700,6 +797,7 @@ lottie-player {
   padding: 30px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s, box-shadow 0.3s;
+  transform-style: preserve-3d;
 }
 
 .contact-form:hover {
@@ -737,6 +835,7 @@ lottie-player {
   padding: 30px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s, box-shadow 0.3s;
+  transform-style: preserve-3d;
 }
 
 .contact-text:hover {
@@ -885,4 +984,16 @@ lottie-player {
     width: 110px;
     height: 160px;
   }
-} 
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tilt-surface,
+  .tilt-layer {
+    transition: none !important;
+  }
+
+  #home::before,
+  #home::after {
+    transform: none !important;
+  }
+}
