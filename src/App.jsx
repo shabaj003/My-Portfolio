@@ -4,6 +4,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   FaArrowRight,
   FaBars,
+  FaBriefcase,
   FaDownload,
   FaEnvelope,
   FaGithub,
@@ -25,6 +26,7 @@ import project3 from "../assets/images/Algorithm.jpeg";
 import project4 from "../assets/images/project4.jpg";
 import project5 from "../assets/images/project2.jpg";
 import project6 from "../assets/images/Project3.webp";
+import project7 from "../assets/images/Freelancing4.jpeg";
 
 import resumeFile from "../assets/documents/My_Resume.pdf";
 import paperFile from "../assets/documents/IJIRT180698_PAPER.pdf";
@@ -82,6 +84,17 @@ const education = [
 
 const projects = [
   {
+      id: "attendance",
+      title: "Attendance Management System",
+      image: project7,
+      stack: "Django, DRF, SQLite, OpenCV, NumPy, SciPy, Bootstrap, JavaScript",
+      description:
+        "A Django web app for digitizing classroom attendance with face verification, role-based access, and anti-proxy controls for secure live authentication.",
+      link: "https://attendance-marker-f8ra.onrender.com",
+      linkLabel: "See Live",
+      status: "Live"
+    },
+  {
     id: "weather",
     title: "Weather App Development",
     stack: "HTML, CSS, JavaScript",
@@ -100,6 +113,16 @@ const projects = [
     linkLabel: "See Live",
     description:
       "Flask-based recommendation app that suggests personalized movies with login, wishlist, and interactive dashboard features."
+  },
+  {
+    id: "word",
+    title: "Word Guessing Game",
+    stack: "HTML, CSS, JavaScript",
+    image: project5,
+    link: "https://word-guessing-k2q4.onrender.com",
+    linkLabel: "See Live",
+    description:
+      "Browser-based word game with random selection, letter validation, and real-time game state updates."
   },
   {
     id: "algo",
@@ -122,27 +145,7 @@ const projects = [
       "Real-time face recognition attendance system with registration, live recognition, automated marking, and CSV record storage."
   },
   {
-    id: "word",
-    title: "Word Guessing Game",
-    stack: "HTML, CSS, JavaScript",
-    image: project5,
-    link: "https://github.com/shabaj003/Word-Guessing",
-    linkLabel: "Source Code",
-    description:
-      "Browser-based word game with random selection, letter validation, and real-time game state updates."
-  },
-  {
     id: "chat",
-    title: "Chat Application System",
-    stack: "HTML, Spring Boot, JavaScript",
-    image: project6,
-    link: "https://github.com/shabaj003/Chat-Application",
-    linkLabel: "Source Code",
-    description:
-      "Real-time chat system using Spring Boot + WebSocket with dynamic HTML and JavaScript for smooth messaging."
-  },
-  {
-    id: "ecom",
     title: "Chat Application System",
     stack: "HTML, Spring Boot, JavaScript",
     image: project6,
@@ -323,6 +326,36 @@ export default function App() {
     setActiveProject((current) => (current === projectId ? null : projectId));
   };
 
+  const handleProjectTiltMove = (event) => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia("(hover: none), (pointer: coarse)").matches) return;
+
+    const card = event.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width;
+    const y = (event.clientY - rect.top) / rect.height;
+    const rotateX = (0.5 - y) * 11;
+    const rotateY = (x - 0.5) * 11;
+
+    card.classList.add("is-hovered");
+    card.style.setProperty("--project-rotate-x", `${rotateX.toFixed(2)}deg`);
+    card.style.setProperty("--project-rotate-y", `${rotateY.toFixed(2)}deg`);
+    card.style.setProperty("--project-glare-x", `${(x * 100).toFixed(2)}%`);
+    card.style.setProperty("--project-glare-y", `${(y * 100).toFixed(2)}%`);
+  };
+
+  const resetProjectTilt = (card) => {
+    card.classList.remove("is-hovered");
+    card.style.setProperty("--project-rotate-x", "0deg");
+    card.style.setProperty("--project-rotate-y", "0deg");
+    card.style.setProperty("--project-glare-x", "50%");
+    card.style.setProperty("--project-glare-y", "50%");
+  };
+
+  const handleProjectTiltLeave = (event) => {
+    resetProjectTilt(event.currentTarget);
+  };
+
   const handleProfileTiltMove = (event) => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (window.matchMedia("(pointer: coarse)").matches) return;
@@ -453,14 +486,22 @@ export default function App() {
             </p>
 
             <div className="about-actions">
-              <a href={resumeFile} target="_blank" rel="noreferrer">
+              <a className="about-btn about-btn-resume" href={resumeFile} target="_blank" rel="noreferrer">
                 <FaDownload /> Get Resume
               </a>
-              <a href="#contact">
+              <a className="about-btn about-btn-contact" href="#contact">
                 <FaArrowRight /> Contact
               </a>
-              <a href={paperFile} target="_blank" rel="noreferrer">
+              <a
+                className="about-btn about-btn-publication"
+                href={paperFile}
+                target="_blank"
+                rel="noreferrer"
+              >
                 <FaMedium /> Publication
+              </a>
+              <a className="about-btn about-btn-freelancing" href="./freelancing.html">
+                <FaBriefcase /> Freelancing
               </a>
             </div>
 
@@ -571,6 +612,9 @@ export default function App() {
                   key={project.id}
                   className={`project-card ${isFlipped ? "flipped" : ""}`}
                   onClick={() => toggleProject(project.id)}
+                  onMouseMove={handleProjectTiltMove}
+                  onMouseLeave={handleProjectTiltLeave}
+                  onBlur={handleProjectTiltLeave}
                   onKeyDown={(event) => {
                     if (event.key === "Enter" || event.key === " ") {
                       event.preventDefault();
@@ -587,6 +631,7 @@ export default function App() {
                       <h3>{project.title}</h3>
                       <p>{project.stack}</p>
                       <a
+                        className={project.linkLabel === "Source Code" ? "link-source" : "link-live"}
                         href={project.link}
                         target="_blank"
                         rel="noreferrer"
@@ -637,5 +682,3 @@ export default function App() {
     </div>
   );
 }
-
-

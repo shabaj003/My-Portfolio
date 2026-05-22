@@ -318,7 +318,7 @@ video {
   gap: 0.65rem;
 }
 
-.about-actions a {
+.about-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.38rem;
@@ -326,9 +326,36 @@ video {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: var(--panel-soft);
+  color: #eef4ff;
   font-size: 0.72rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease, background 220ms ease;
+}
+
+.about-btn-resume {
+  border-color: rgba(196, 202, 218, 0.36);
+  background: linear-gradient(135deg, rgba(96, 106, 126, 0.45), rgba(38, 48, 66, 0.55));
+}
+
+.about-btn-contact {
+  border-color: rgba(90, 176, 255, 0.45);
+  background: linear-gradient(135deg, rgba(19, 84, 148, 0.56), rgba(36, 126, 209, 0.42));
+}
+
+.about-btn-publication {
+  border-color: rgba(168, 141, 255, 0.45);
+  background: linear-gradient(135deg, rgba(85, 54, 153, 0.55), rgba(111, 76, 192, 0.48));
+}
+
+.about-btn-freelancing {
+  border-color: rgba(77, 234, 173, 0.45);
+  background: linear-gradient(135deg, rgba(13, 107, 76, 0.56), rgba(26, 146, 102, 0.46));
+}
+
+.about-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.36);
 }
 
 .social-links {
@@ -509,6 +536,7 @@ video {
   border-radius: 14px;
   background: var(--panel-soft);
   padding: 0.9rem;
+  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease, background 220ms ease;
 }
 
 .education-card h3 {
@@ -556,11 +584,13 @@ video {
   flex-direction: column;
   align-items: center;
   gap: 0.55rem;
+  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease, background 220ms ease;
 }
 
 .skill-card img {
   width: 2.5rem;
   height: 2.5rem;
+  transition: transform 220ms ease;
 }
 
 .skill-card span {
@@ -578,23 +608,61 @@ video {
 }
 
 .project-card {
+  position: relative;
   min-height: 360px;
   border-radius: 16px;
   perspective: 1000px;
+  transform-style: preserve-3d;
+  isolation: isolate;
+  background: #000;
   cursor: pointer;
   outline: none;
+  transition: box-shadow 260ms ease;
+}
+
+.project-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 4;
+  transition: opacity 260ms ease;
+  background: radial-gradient(
+    circle at var(--project-glare-x, 50%) var(--project-glare-y, 50%),
+    rgba(255, 255, 255, 0.26),
+    rgba(255, 255, 255, 0) 58%
+  );
+}
+
+.project-card.is-hovered {
+  box-shadow: 0 20px 34px rgba(0, 0, 0, 0.52);
+}
+
+.project-card.is-hovered::before {
+  opacity: 0.7;
+}
+
+.project-card:focus-visible {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.45), 0 20px 34px rgba(0, 0, 0, 0.52);
 }
 
 .project-card-inner {
   position: relative;
   width: 100%;
   height: 100%;
-  transition: transform 700ms ease;
+  border-radius: 16px;
+  background: #000;
+  transition: transform 600ms cubic-bezier(0.2, 0.7, 0.2, 1);
   transform-style: preserve-3d;
+  transform: rotateX(var(--project-rotate-x, 0deg)) rotateY(var(--project-rotate-y, 0deg));
+  will-change: transform;
 }
 
 .project-card.flipped .project-card-inner {
-  transform: rotateY(180deg);
+  transform: rotateX(var(--project-rotate-x, 0deg))
+    rotateY(calc(180deg + var(--project-rotate-y, 0deg)));
 }
 
 .project-front,
@@ -645,6 +713,42 @@ video {
   text-transform: uppercase;
   border: 1px solid rgba(255, 255, 255, 0.18);
   background: rgba(255, 255, 255, 0.1);
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease, background 220ms ease;
+}
+
+.project-front a.link-live {
+  border-color: rgba(84, 183, 255, 0.52);
+  background: linear-gradient(135deg, rgba(14, 105, 179, 0.56), rgba(40, 150, 232, 0.44));
+}
+
+.project-front a.link-source {
+  border-color: rgba(79, 221, 160, 0.52);
+  background: linear-gradient(135deg, rgba(10, 122, 78, 0.56), rgba(29, 164, 107, 0.45));
+}
+
+.project-front a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.34);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .skill-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(120, 182, 255, 0.42);
+    background: rgba(18, 22, 36, 0.9);
+    box-shadow: 0 16px 26px rgba(0, 0, 0, 0.35);
+  }
+
+  .skill-card:hover img {
+    transform: scale(1.07);
+  }
+
+  .education-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(120, 182, 255, 0.38);
+    background: rgba(18, 18, 18, 0.85);
+    box-shadow: 0 16px 26px rgba(0, 0, 0, 0.36);
+  }
 }
 
 .project-back {
@@ -652,6 +756,7 @@ video {
   display: grid;
   place-items: center;
   padding: 1rem;
+  background: #000;
 }
 
 .project-back p {
@@ -940,5 +1045,13 @@ video {
   .tilt-profile {
     opacity: 0 !important;
     transform: translateX(-50%) translateY(22px) scale(0.9) translateZ(50px) !important;
+  }
+
+  .project-card {
+    box-shadow: none !important;
+  }
+
+  .project-card::before {
+    opacity: 0 !important;
   }
 }
