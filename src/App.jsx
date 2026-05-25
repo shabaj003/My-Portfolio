@@ -161,7 +161,8 @@ const navItems = [
   { href: "#education", label: "Education" },
   { href: "#skills", label: "Skills" },
   { href: "#projects", label: "Projects" },
-  { href: "#contact", label: "Contact" }
+  { href: "#contact", label: "Contact" },
+  { href: "./freelancing.html", label: "FreeLancing" }
 ];
 
 function SkillTrack({ items, reverse = false }) {
@@ -182,7 +183,6 @@ export default function App() {
   const appRef = useRef(null);
   const tiltCardRef = useRef(null);
   const glareRef = useRef(null);
-  const introAutoScrollDoneRef = useRef(false);
   const [activeProject, setActiveProject] = useState(null);
   const [introDone, setIntroDone] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -270,24 +270,6 @@ export default function App() {
     }, appRef);
 
     return () => ctx.revert();
-  }, [introDone]);
-
-  useEffect(() => {
-    if (!introDone || introAutoScrollDoneRef.current) return undefined;
-
-    const target = document.querySelector("#about");
-    if (!target) return undefined;
-
-    introAutoScrollDoneRef.current = true;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const timer = window.setTimeout(() => {
-      target.scrollIntoView({
-        behavior: reduceMotion ? "auto" : "smooth",
-        block: "start"
-      });
-    }, reduceMotion ? 0 : 120);
-
-    return () => window.clearTimeout(timer);
   }, [introDone]);
 
   useEffect(() => {
