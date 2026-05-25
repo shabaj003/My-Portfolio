@@ -26,7 +26,7 @@ import project3 from "../assets/images/Algorithm.jpeg";
 import project4 from "../assets/images/project4.jpg";
 import project5 from "../assets/images/project2.jpg";
 import project6 from "../assets/images/Project3.webp";
-import project7 from "../assets/images/Freelancing4.jpeg";
+import project7 from "../assets/images/FreeLancing4.jpeg";
 
 import resumeFile from "../assets/documents/My_Resume.pdf";
 import paperFile from "../assets/documents/IJIRT180698_PAPER.pdf";
