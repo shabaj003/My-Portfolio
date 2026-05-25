@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { Canvas, extend, useFrame, useThree } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
 import {
   Bloom,
   EffectComposer,
@@ -271,7 +270,38 @@ void main() {
 }
 `;
 
-const FieldMaterial = shaderMaterial(
+function createShaderMaterial(uniformValues, vertexShader, fragmentShader) {
+  const baseUniforms = Object.entries(uniformValues).reduce((uniforms, [key, value]) => {
+    uniforms[key] = { value };
+    return uniforms;
+  }, {});
+
+  class CustomShaderMaterial extends THREE.ShaderMaterial {
+    constructor(parameters = {}) {
+      super({
+        uniforms: THREE.UniformsUtils.clone(baseUniforms),
+        vertexShader,
+        fragmentShader,
+        ...parameters
+      });
+    }
+  }
+
+  Object.keys(uniformValues).forEach((key) => {
+    Object.defineProperty(CustomShaderMaterial.prototype, key, {
+      get() {
+        return this.uniforms[key].value;
+      },
+      set(value) {
+        this.uniforms[key].value = value;
+      }
+    });
+  });
+
+  return CustomShaderMaterial;
+}
+
+const FieldMaterial = createShaderMaterial(
   {
     uTime: 0,
     uPulse: 0,
@@ -282,7 +312,7 @@ const FieldMaterial = shaderMaterial(
   fieldFragmentShader
 );
 
-const TerrainMaterial = shaderMaterial(
+const TerrainMaterial = createShaderMaterial(
   {
     uTime: 0,
     uPulse: 0,
@@ -292,7 +322,7 @@ const TerrainMaterial = shaderMaterial(
   terrainFragmentShader
 );
 
-const WireTerrainMaterial = shaderMaterial(
+const WireTerrainMaterial = createShaderMaterial(
   {
     uTime: 0,
     uPulse: 0,
@@ -302,7 +332,7 @@ const WireTerrainMaterial = shaderMaterial(
   wireFragmentShader
 );
 
-const ParticleMaterial = shaderMaterial(
+const ParticleMaterial = createShaderMaterial(
   {
     uTime: 0,
     uPulse: 0,
