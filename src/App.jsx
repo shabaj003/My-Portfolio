@@ -1,6 +1,5 @@
 ﻿import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   FaArrowRight,
   FaBars,
@@ -189,8 +188,6 @@ export default function App() {
   const [mobileProfileHover, setMobileProfileHover] = useState(false);
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (reduceMotion) {
@@ -225,54 +222,6 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (!introDone) return undefined;
-
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion) return undefined;
-
-    const ctx = gsap.context(() => {
-      gsap.from(".top-nav", {
-        y: -18,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power3.out"
-      });
-
-      gsap.from(".hero-reveal > span", {
-        yPercent: 105,
-        duration: 1.05,
-        stagger: 0.14,
-        ease: "expo.out",
-        delay: 0.12
-      });
-
-      gsap.from(".hero-fade", {
-        y: 20,
-        opacity: 0,
-        duration: 0.95,
-        stagger: 0.1,
-        ease: "power3.out",
-        delay: 0.25
-      });
-
-      gsap.utils.toArray(".reveal-section").forEach((section) => {
-        gsap.from(section, {
-          y: 46,
-          opacity: 0,
-          duration: 0.9,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: section,
-            start: "top 86%"
-          }
-        });
-      });
-    }, appRef);
-
-    return () => ctx.revert();
-  }, [introDone]);
-
-  useEffect(() => {
     const closeOnDesktop = () => {
       if (window.innerWidth > 1024) setMobileNavOpen(false);
     };
@@ -291,6 +240,44 @@ export default function App() {
     window.addEventListener("resize", resetMobileHoverOnPointerChange);
     return () => window.removeEventListener("resize", resetMobileHoverOnPointerChange);
   }, []);
+
+  useEffect(() => {
+    if (!introDone) return undefined;
+
+    const sections = Array.from(
+      appRef.current?.querySelectorAll(".reveal-section:not(.hero-card)") ?? []
+    );
+
+    if (!sections.length) return undefined;
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+      sections.forEach((section) => section.classList.add("is-visible"));
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        });
+      },
+      {
+        rootMargin: "0px 0px -12% 0px",
+        threshold: 0.14
+      }
+    );
+
+    sections.forEach((section, index) => {
+      section.style.setProperty("--reveal-delay", `${Math.min(index * 80, 320)}ms`);
+      observer.observe(section);
+    });
+
+    return () => observer.disconnect();
+  }, [introDone]);
 
   const handleAnchorClick = (event, href) => {
     if (!href.startsWith("#")) return;
@@ -375,26 +362,28 @@ export default function App() {
   };
 
   return (
-    <div className="portfolio-app" ref={appRef}>
+    <div className={`portfolio-app ${introDone ? "scroll-animations-ready" : ""}`} ref={appRef}>
       <DeveloperBackground3DShader quality="high" />
 
-      <section id="intro-loader" aria-hidden={introDone}>
-        <div className="loader-top">
-          <p className="loader-reveal">
-            <span>Welcome to my</span>
-          </p>
-          <p className="loader-reveal">
-            <span>portfolio</span>
-          </p>
-        </div>
-        <h1 className="loader-name">
-          {["Shahabaj", "Mulani", "is", "a"].map((word) => (
-            <span key={word} className="loader-reveal">
-              <span>{word}</span>
-            </span>
-          ))}
-        </h1>
-      </section>
+      {!introDone && (
+        <section id="intro-loader" aria-hidden="true">
+          <div className="loader-top">
+            <p className="loader-reveal">
+              <span>Welcome to my</span>
+            </p>
+            <p className="loader-reveal">
+              <span>portfolio</span>
+            </p>
+          </div>
+          <h1 className="loader-name">
+            {["Shahabaj", "Mulani", "is", "a"].map((word) => (
+              <span key={word} className="loader-reveal">
+                <span>{word}</span>
+              </span>
+            ))}
+          </h1>
+        </section>
+      )}
 
       <header className="top-nav">
         <a href="#home" className="brand nav-link">
@@ -453,7 +442,7 @@ export default function App() {
           </div>
         </section>
 
-        <section id="about" className="glass-section about-grid reveal-section">
+        <section id="about" className="glass-section about-grid">
           <div>
             <p className="section-label">About Me</p>
             <p>
